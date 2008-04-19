@@ -1,0 +1,43 @@
+Simple interface to different Source Code Management systems.
+
+Commands
+
+* test
+Identify VCS for the specified directory, or current if none specified.  This
+test should not use native commands, so the user doesn't need to have them
+installed.
+
+* update
+synchronize working copy to latest upstream version
+
+
+
+Future Commands
+
+* diff
+diff working copy to base version
+arbitrary diff between revisions
+
+* info
+Repository/Working copy general info: upstream servers, version, last commit log, etc.
+
+* status
+status of working copy. clean? modified files, missing files.
+
+* revert/clean
+get working copy back to pristine state
+
+* installed
+is this plugin usable? are the required commands installed on the system
+
+* log/history
+the history tree
+
+* blame/annotate
+
+* test-URL - automatically identify server type
+* init - prepare new project
+* checkout - and get the latest version
+* commit - yeah..
+* branch - for branching
+

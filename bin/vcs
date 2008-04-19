@@ -1,0 +1,82 @@
+#!/bin/sh
+#
+#   Copyright (c) 2008 João Abecasis
+#
+#   Permission is hereby granted, free of charge, to any person obtaining a
+#   copy of this software and associated documentation files (the "Software"),
+#   to deal in the Software without restriction, including without limitation
+#   the rights to use, copy, modify, merge, publish, distribute, sublicense,
+#   and/or sell copies of the Software, and to permit persons to whom the
+#   Software is furnished to do so, subject to the following conditions:
+#
+#   The above copyright notice and this permission notice shall be included in
+#   all copies or substantial portions of the Software.
+#
+#   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+#   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+#   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+#   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+#   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+#   DEALINGS IN THE SOFTWARE.
+#
+
+COMMAND="$1"
+shift
+
+# Configuration
+# TODO: De-hardcode the defaults to something more sensible
+VCS_BIN_DIR=~/work/vcs/bin
+VCS_PLUGIN_PATH=~/work/vcs/plugins
+
+# Initialization
+VCS_PLUGIN=()
+USE_PLUGIN=
+
+# Functions
+function register_plugins()
+{
+    [ -n "${VCS_PLUGIN[*]}" ] && return
+
+    old_ifs="$IFS"
+    IFS=":"
+    for plugin_dir in $VCS_PLUGIN_PATH
+    do
+        IFS="$old_ifs"
+        VCS_PLUGIN=( "${VCS_PLUGIN[@]}" "$plugin_dir"/*/ )
+    done
+}
+
+function auto_detect_plugin()
+{
+    [ -n "$USE_PLUGIN" ] && return 0
+
+    register_plugins
+
+    local dir="$1"
+    for plugin in "${VCS_PLUGIN[@]}"
+    do
+        if [ -f "$plugin/test" ] && "$plugin/test" "$dir" > /dev/null
+        then
+            USE_PLUGIN="$plugin"
+            return 0
+        fi
+    done
+    
+    return 1
+}
+
+# Delegate
+if [ -f "$VCS_BIN_DIR/$COMMAND" ]
+then
+    source "$VCS_BIN_DIR/$COMMAND" "$@"
+else
+    auto_detect_plugin "`pwd`"
+    if [ -f "$USE_PLUGIN/$COMMAND" -a -x "$USE_PLUGIN/$COMMAND" ]
+    then
+        "$USE_PLUGIN/$COMMAND" "$@"
+    else
+        echo "Command not recognized or not supported by plugin (`basename "$USE_PLUGIN"`)." >&2
+    fi
+fi
+
