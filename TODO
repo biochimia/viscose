@@ -1,3 +1,6 @@
+* push/pull
+With the prevalence of DVCS, should have this. For grabbing/pushing history, without actually changing the working copy.
+
 * diff
 diff working copy to base version
 arbitrary diff between revisions

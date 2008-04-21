@@ -1,10 +1,41 @@
-Simple interface to different Source Code Management systems.
+Viscose wants to provide a simple interface to different version control or
+source code management systems. I wrote this to make it easier to manage a
+bunch of source code repositories from projects I try to follow. It's possible
+and even probable that you have no use for it.
+
+Installation
+============
+
+There's a single point of entry for the funcionality, which is bin/vcs. If you
+want to copy or link it to your path or if you'd rather use it from where it
+is, it's up to you.
+
+In that script there are 2 variables that need to be set, though. Find the
+lines,
+
+    VCS_BIN_DIR=~/work/vcs/bin
+    VCS_PLUGIN_PATH=~/work/vcs/plugins
+
+And change the paths to match your installation. That's it!
+
+
+Usage
+=====
+
+Usually,
+
+    $ vcs <command> <arguments>...
+
+assuming vcs is in your path.
+
+
 
 Commands
+========
 
 * test
 Identify VCS for the specified directory, or current if none specified.  This
-test should not use native commands, so the user doesn't need to have them
+test should not use native commands, so you don't need to have all of them
 installed.
 
 * update
