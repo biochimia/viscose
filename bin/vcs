@@ -24,14 +24,33 @@
 COMMAND="$1"
 shift
 
-# Configuration
-# TODO: De-hardcode the defaults to something more sensible
-VCS_BIN_DIR=~/work/vcs/bin
-VCS_PLUGIN_PATH=~/work/vcs/plugins
+##
+## Configuration
+##
 
-# Initialization
+# defaults
+# TODO: $prefix
+VCS_BIN_DIR=/usr/share/viscose/bin
+VCS_PLUGIN_PATH=/usr/share/viscose/plugins
+
+# Registered plugins (path). Should be automatically detected, but can also be
+# hardcoded in this array.
 VCS_PLUGIN=()
-USE_PLUGIN=
+
+# System settings
+# TODO: $prefix
+if [ -f /etc/viscose ]
+then
+    # TODO: Is this a security issue? Probably... :-/
+    source /etc/viscose
+fi
+
+# User settings
+if [ -f ~/.viscose ]
+then
+    # TODO: Is this a security issue? Probably... :-/
+    source ~/.viscose
+fi
 
 # Functions
 function register_plugins()
@@ -46,6 +65,8 @@ function register_plugins()
         VCS_PLUGIN=( "${VCS_PLUGIN[@]}" "$plugin_dir"/*/ )
     done
 }
+
+USE_PLUGIN=
 
 function auto_detect_plugin()
 {
